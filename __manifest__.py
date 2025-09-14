@@ -8,7 +8,7 @@
     'author': 'Juan Salvador',
     'website': 'https://jsalvador.dev',
     'category': 'Inventory',
-    'depends': ['stock'],
+    'depends': ['stock','peruanita_stock_picking'],
     'data': [
         'views/stock_picking_views.xml',
     ],

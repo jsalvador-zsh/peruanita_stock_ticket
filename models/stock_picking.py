@@ -59,8 +59,17 @@ class StockPicking(models.Model):
             data = {
                 'name': picking.name or '',
                 'picking_date': picking_date,
-                'partner_id': partner_name,
+                'partner_id': partner_name or '',
+                # Control de ingreso
+                'referral_guide': picking.referral_guide or '',
                 'vat': partner_vat,
+                # Control de despacho
+                'transport_company': picking.transport_company_id.name or '',
+                'vehicle_plate': picking.vehicle_plate or '',
+                'declaration_sworn': 'SI' if getattr(picking, 'declaration_sworn', False) else 'NO',
+                'certificate_microbiological': 'SI' if getattr(picking, 'certificate_microbiological', False) else 'NO',
+                'shipping_guide': 'SI' if getattr(picking, 'shipping_guide', False) else 'NO',
+
                 'state': dict(self._fields['state'].selection).get(picking.state) if hasattr(self, '_fields') else '',
                 'picking_type': picking.picking_type_id.name if picking.picking_type_id else '',
                 'picking_type_code': picking_type_code,

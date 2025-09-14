@@ -73,7 +73,7 @@
                     <img t-att-src="receipt.company.logo" class="w-50" style="max-height: 100px; object-fit: contain;"/>
                 </div>
             </div>
-            
+
             <!-- Verificar que exista company antes de acceder a sus propiedades -->
             <t t-if="receipt.company">
                 <div class="stock-center-align">
@@ -94,7 +94,8 @@
             
             <div class="stock-center-align type-docu">
                 <h4 class="display_name_document">
-                    <!-- Corregir: usar receipt.picking_type_code en lugar de state.receipt.picking_type_code -->
+                    <!-- Corregir: usar receipt.picking_type_code en lugar de
+                    state.receipt.picking_type_code -->
                     <t t-if="receipt.picking_type_code == 'outgoing'">
                         <b>CONTROL DE DESPACHO</b>
                     </t>
@@ -116,13 +117,42 @@
                     <b>FECHA: </b>
                     <t t-esc="receipt.picking_date || ''"/>
                 </div>
-                
-                <!-- Corregir: usar receipt.picking_type_code -->
+
+                <!-- Control de despacho -->
+                <div class="receipt-user" t-if="receipt.picking_type_code == 'outgoing'">
+                    <b>CLIENTE: </b>
+                    <t t-esc="receipt.partner_id || ''"/>
+                </div>
+                <div class="receipt-user" t-if="receipt.picking_type_code == 'outgoing'">
+                    <b>TRANSPORTE: </b>
+                    <t t-esc="receipt.transport_company || ''"/>
+                </div>
+                <div class="receipt-user" t-if="receipt.picking_type_code == 'outgoing'">
+                    <b>PLACA DEL VEHÍCULO: </b>
+                    <t t-esc="receipt.vehicle_plate || ''"/>
+                </div>
+                <br />
+                <div class="receipt-user" t-if="receipt.picking_type_code == 'outgoing'">
+                    <b>DECLARACIÓN JURADA: </b>
+                    <t t-esc="receipt.declaration_sworn || ''"/>
+                </div>
+                <div class="receipt-user" t-if="receipt.picking_type_code == 'outgoing'">
+                    <b>CERTIFICADOS MICRO. FÍSICO, ORGA.: </b>
+                    <t t-esc="receipt.certificate_microbiological || ''"/>
+                </div>
+                <div class="receipt-user" t-if="receipt.picking_type_code == 'outgoing'">
+                    <b>GUÍA DE REMISIÓN: </b>
+                    <t t-esc="receipt.shipping_guide || ''"/>
+                </div>
+                <!-- Control de recepción -->
                 <div class="receipt-user" t-if="receipt.picking_type_code == 'incoming'">
                     <b>PROVEEDOR: </b>
                     <t t-esc="receipt.partner_id || ''"/>
                 </div>
-                
+                <div class="receipt-user" t-if="receipt.picking_type_code == 'incoming'">
+                    <b>GUÍA DE REMISIÓN: </b>
+                    <t t-esc="receipt.referral_guide || ''"/>
+                </div>
                 <div class="receipt-user" t-if="receipt.picking_type_code == 'incoming'">
                     <b>RUC/DNI: </b>
                     <t t-esc="receipt.vat || ''"/>
