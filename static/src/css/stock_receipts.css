@@ -1,0 +1,65 @@
+.inventory-receipt-print {
+    width: 512px;
+    height: 0;
+    overflow: hidden;
+    inventoryition: absolute;
+    left: 0;
+    top: 0;
+    text-align: left;
+    direction: ltr;
+    font-size: 28px;
+    color: #000000;
+}
+
+.inventory-receipt .inventory-receipt-right-align {
+    float: right;
+}
+
+.inventory-receipt .inventory-receipt-center-align {
+    text-align: center;
+}
+
+.inventory-receipt .inventory-receipt-left-padding {
+    padding-left: 2em;
+}
+
+.inventory-receipt .inventory-receipt-logo {
+    width: 50%;
+    display: block;
+    margin: 0 auto;
+}
+
+.inventory-receipt .inventory-receipt-contact {
+    text-align: center;
+    font-size: 75%;
+}
+
+.inventory-receipt .inventory-receipt-order-data {
+    text-align: center;
+    font-size: 75%;
+}
+
+.inventory-receipt .inventory-receipt-amount {
+    font-size: 125%;
+    padding-left: 6em;
+}
+
+.inventory-receipt .inventory-receipt-title {
+    font-weight: bold;
+    font-size: 125%;
+    text-align: center;
+}
+
+.inventory-receipt .inventory-receipt-header {
+    font-size: 125%;
+    text-align: center;
+}
+
+.inventory-receipt .inventory-order-receipt-cancel {
+    color: red;
+}
+
+.inventory-payment-terminal-receipt {
+    text-align: center;
+    font-size: 75%;
+}

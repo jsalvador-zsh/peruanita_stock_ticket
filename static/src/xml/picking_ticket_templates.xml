@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    
+    <t t-name="peruanita_stock_ticket.PickingTicketMain" owl="1">
+        <div class="pos">
+            <div class="stock-content">
+                <div class="window">
+                    <div class="subwindow">
+                        <div class="subwindow-container">
+                            <div class="subwindow-container-fix screens">
+                                <t t-if="state.loading">
+                                    <div class="d-flex justify-content-center">
+                                        <div class="text-center">
+                                            <i class="fa fa-spinner fa-spin fa-3x"></i>
+                                            <p>Cargando...</p>
+                                        </div>
+                                    </div>
+                                </t>
+                                <t t-elif="state.error">
+                                    <div class="d-flex justify-content-center">
+                                        <div class="text-center">
+                                            <i class="fa fa-exclamation-triangle fa-3x text-warning"></i>
+                                            <p><t t-esc="state.error"/></p>
+                                            <button class="btn btn-secondary" t-on-click="onBackClick">
+                                                Volver
+                                            </button>
+                                        </div>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <t t-call="peruanita_stock_ticket.PickingScreenWidget"/>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+    
+    <t t-name="peruanita_stock_ticket.PickingScreenWidget" owl="1">
+        <div class="receipt-screen screen">
+            <div class="screen-content">
+                <div class="top-content">
+                    <button class="button back" t-on-click="onBackClick">
+                        <i class="fa fa-angle-double-left"></i>
+                        Atrás
+                    </button>
+                </div>
+                <div class="centered-content touch-scrollable">
+                    <div class="d-flex justify-content-center mb-3">
+                        <button class="w-100 button print" t-on-click="onPrintClick">
+                            <i class="fa fa-print"></i> Imprimir ticket
+                        </button>
+                    </div>
+                    <div class="stock-receipt-container">
+                        <t t-if="state.receipt">
+                            <t t-call="peruanita_stock_ticket.ReceiptPicking">
+                                <t t-set="receipt" t-value="state.receipt"/>
+                            </t>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+    
+    <t t-name="peruanita_stock_ticket.ReceiptPicking" owl="1">
+        <div class="stock-receipt">
+            <!-- Verificar que exista company y logo antes de mostrar -->
+            <div class="logo" t-if="receipt.company and receipt.company.logo">
+                <div class="stock-center-align">
+                    <img t-att-src="receipt.company.logo" class="w-50" style="max-height: 100px; object-fit: contain;"/>
+                </div>
+            </div>
+            
+            <!-- Verificar que exista company antes de acceder a sus propiedades -->
+            <t t-if="receipt.company">
+                <div class="stock-center-align">
+                    <b>
+                        <t t-esc="receipt.company.name or ''"/>
+                    </b>
+                </div>
+                <div class="stock-center-align">
+                    <t t-esc="receipt.company.street || '-'"/>
+                </div>
+                <div class="stock-center-align">Teléfono:
+                    <t t-esc="receipt.company.phone || ''"/>
+                </div>
+                <div class="stock-center-align">R.U.C.:
+                    <t t-esc="receipt.company.vat || ''"/>
+                </div>
+            </t>
+            
+            <div class="stock-center-align type-docu">
+                <h4 class="display_name_document">
+                    <!-- Corregir: usar receipt.picking_type_code en lugar de state.receipt.picking_type_code -->
+                    <t t-if="receipt.picking_type_code == 'outgoing'">
+                        <b>CONTROL DE DESPACHO</b>
+                    </t>
+                    <t t-elif="receipt.picking_type_code == 'incoming'">
+                        <b>GUÍA INTERNA DE RECEPCIÓN</b>
+                    </t>
+                    <t t-else="">
+                        <b>TRANSFERENCIA DE INVENTARIO</b>
+                    </t>
+                    <br/>
+                    <b>
+                        <t t-esc="receipt.name || ''"/>
+                    </b>
+                </h4>
+            </div>
+            
+            <div class="section-customer">
+                <div class="receipt-user">
+                    <b>FECHA: </b>
+                    <t t-esc="receipt.picking_date || ''"/>
+                </div>
+                
+                <!-- Corregir: usar receipt.picking_type_code -->
+                <div class="receipt-user" t-if="receipt.picking_type_code == 'incoming'">
+                    <b>PROVEEDOR: </b>
+                    <t t-esc="receipt.partner_id || ''"/>
+                </div>
+                
+                <div class="receipt-user" t-if="receipt.picking_type_code == 'incoming'">
+                    <b>RUC/DNI: </b>
+                    <t t-esc="receipt.vat || ''"/>
+                </div>
+                
+                <div class="receipt-user" t-if="receipt.picking_type_code == 'outgoing'">
+                    <b>ORIGEN: </b>
+                    <t t-esc="receipt.location_from || ''"/>
+                </div>
+                
+                <div class="receipt-user" t-if="receipt.picking_type_code == 'incoming'">
+                    <b>DESTINO: </b>
+                    <t t-esc="receipt.location_to || ''"/>
+                </div>
+            </div>
+            
+            <br/>
+            <table class="receipt-orderlines" style="border-top: 1px black dotted">
+                <colgroup>
+                    <col width="15%" />
+                    <col width="55%" />
+                    <col width="15%" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th style="text-align: center;">
+                            <b>CANT.</b>
+                        </th>
+                        <th style="text-align: center;">
+                            <b>PRODUCTO</b>
+                        </th>
+                        <th style="text-align: center;">
+                            <b>U.M.</b>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="receipt.lines || []" t-as="line" t-key="line_index" style="border-bottom: 1px black dotted">
+                        <td class="stock-center-align">
+                            <t t-esc="formatQuantity(line.quantity)"/>
+                        </td>
+                        <td class="stock-center-align">
+                            <t t-esc="line.product_name || ''"/>
+                        </td>
+                        <td class="stock-center-align">
+                            <t t-esc="line.uom_name || ''"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <br/>
+            <div class="receipt-user" id="receipt_cashier">
+                <b t-if="receipt.user_id">RESPONSABLE: </b>
+                <t t-esc="receipt.user_id || ''"/>
+                <br />
+            </div>
+            
+            <div class="stock-center-align">
+                <br/>
+                <span style="font-size:13px">
+                    <b>Documento generado electrónicamente</b>
+                </span>
+                <div class="timestamp">
+                    <t t-esc="new Date().toLocaleString('es-PE')"/>
+                </div>
+                <div class="cut-space"></div>
+            </div>
+        </div>
+    </t>
+    
+</templates>
