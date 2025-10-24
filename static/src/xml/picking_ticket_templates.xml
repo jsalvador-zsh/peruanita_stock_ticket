@@ -142,7 +142,8 @@
                 </div>
                 <div class="receipt-user" t-if="receipt.picking_type_code == 'outgoing'">
                     <b>GUÍA DE REMISIÓN: </b>
-                    <t t-esc="receipt.shipping_guide || ''"/>
+                    <t t-esc="receipt.shipping_guide_number || ''"/>
+
                 </div>
                 <!-- Control de recepción -->
                 <div class="receipt-user" t-if="receipt.picking_type_code == 'incoming'">
@@ -185,20 +186,20 @@
                             <b>PRODUCTO</b>
                         </th>
                         <th style="text-align: center;">
-                            <b>U.M.</b>
+                            <b>EMB.</b>
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr t-foreach="receipt.lines || []" t-as="line" t-key="line_index" style="border-bottom: 1px black dotted">
                         <td class="stock-center-align">
-                            <t t-esc="formatQuantity(line.quantity)"/>
+                            <t t-esc="formatQuantity(line.product_packaging_qty)"/>
                         </td>
                         <td class="stock-center-align">
                             <t t-esc="line.product_name || ''"/>
                         </td>
                         <td class="stock-center-align">
-                            <t t-esc="line.uom_name || ''"/>
+                            <t t-esc="line.product_packaging_id || ''"/>
                         </td>
                     </tr>
                 </tbody>

@@ -69,7 +69,7 @@ class StockPicking(models.Model):
                 'declaration_sworn': 'SI' if getattr(picking, 'declaration_sworn', False) else 'NO',
                 'certificate_microbiological': 'SI' if getattr(picking, 'certificate_microbiological', False) else 'NO',
                 'shipping_guide': 'SI' if getattr(picking, 'shipping_guide', False) else 'NO',
-
+                'shipping_guide_number': getattr(picking, 'shipping_guide_number', '') or '',
                 'state': dict(self._fields['state'].selection).get(picking.state) if hasattr(self, '_fields') else '',
                 'picking_type': picking.picking_type_id.name if picking.picking_type_id else '',
                 'picking_type_code': picking_type_code,
@@ -84,11 +84,28 @@ class StockPicking(models.Model):
             
             # Procesar líneas de movimiento
             for line in picking.move_ids_without_package:
+                packaging_qty = 0
+                packaging_name = ''
+                
+                # Verificar si la línea tiene un embalaje asignado
+                if line.product_packaging_id:
+                    packaging_name = line.product_packaging_id.name
+                    if line.product_packaging_id.qty > 0:
+                        packaging_qty = line.product_uom_qty / line.product_packaging_id.qty
+                # Si no, usar el embalaje por defecto del producto
+                elif line.product_id.packaging_ids:
+                    packaging = line.product_id.packaging_ids[:1]
+                    packaging_name = packaging.name
+                    if packaging.qty > 0:
+                        packaging_qty = line.product_uom_qty / packaging.qty
+                
                 line_data = {
                     'product_code': line.product_id.default_code or '',
                     'product_name': line.product_id.display_name or '',
                     'quantity': line.product_uom_qty or 0,
                     'uom_name': line.product_uom.name if line.product_uom else '',
+                    'product_packaging_id': packaging_name,
+                    'product_packaging_qty': round(packaging_qty, 2) if packaging_qty else 0,
                     'lot_name': line.move_line_ids.lot_id.name if line.move_line_ids and line.move_line_ids.lot_id else ''
                 }
                 data['lines'].append(line_data)
